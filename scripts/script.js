@@ -53,6 +53,6 @@ function createPieChart(dataset) {
 
     arcs.append("title") // TODO: make this more fancy
         .text(function(d, i) {
-            return countries[i] + ": " + d.value;
+            return countries[i] + ": " + d.value.toLocaleString();
         })
 }
