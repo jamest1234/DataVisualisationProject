@@ -1,3 +1,5 @@
+(function() {
+
 const w = 600;
 const h = 600;
 
@@ -29,7 +31,7 @@ function createPieChart(dataset) {
 
     var pie = d3.pie();
 
-    var svg = d3.select("#visualisation")
+    var svg = d3.select("#piechart")
         .append("svg")
         .attr("viewBox", `0 0 ${w} ${h}`);
 
@@ -55,3 +57,5 @@ function createPieChart(dataset) {
             return countries[i] + ": " + d.value.toLocaleString();
         })
 }
+
+})();

@@ -1,3 +1,5 @@
+(function() {
+
 const w = 600;
 const h = 500;
 const padding = 5;
@@ -18,7 +20,7 @@ tooltip.innerText = "Line 1\nLine 2";
 document.body.appendChild(tooltip);
 
 function moveToolTip(e) {
-    var svg = d3.select("#visualisation");
+    var svg = d3.select("#funnelchart");
     var bars = svg.selectAll("rect");
 
     var distanceComparator = function(d) {
@@ -32,8 +34,8 @@ function moveToolTip(e) {
     
     tooltip.innerText = `Date: ${data.date.toLocaleDateString()}\nMigrants: ${data.refugees.toLocaleString()}`;
 
-    tooltip.style.left = e.clientX+"px";
-    tooltip.style.top = (e.clientY-tooltip.clientHeight)+"px";
+    tooltip.style.left = e.pageX+"px";
+    tooltip.style.top = (e.pageY-tooltip.clientHeight)+"px";
     tooltip.style.display = "block";
 }
 
@@ -72,7 +74,7 @@ function createFunnelChart(dataset) {
         .rangeRound([0, h])
         .paddingInner(0.05);
 
-    var svg = d3.select("#visualisation")
+    var svg = d3.select("#funnelchart")
         .append("svg")
         .attr("viewBox", `0 0 ${w} ${h}`);
 
@@ -104,3 +106,5 @@ function createFunnelChart(dataset) {
             return colour(d.refugees);
         });
 }
+
+})();
