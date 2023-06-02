@@ -2,6 +2,36 @@
 
 const w = 600;
 const h = 600;
+const padding = 10;
+
+const tooltip = document.createElement("div");
+tooltip.classList.add("tooltip");
+
+document.body.appendChild(tooltip);
+
+function moveToolTip(e) {
+    var arc = d3.select(this);
+
+    arc.attr("stroke", "black");
+    arc.attr("stroke-width", 5);
+
+    var data = arc.data()[0].data;
+    
+    tooltip.innerText = `${data.country}: ${data.refugees.toLocaleString()}`;
+
+    tooltip.style.left = e.pageX+"px";
+    tooltip.style.top = (e.pageY-tooltip.clientHeight)+"px";
+    tooltip.style.display = "block";
+}
+
+function hideToolTip() {
+    var arc = d3.select(this);
+
+    arc.attr("stroke", null);
+    arc.attr("stroke-width", null);
+
+    tooltip.style.display = "none";
+}
 
 d3.csv("refugeecount.csv", processCSV)
     .then(createPieChart);
@@ -13,49 +43,40 @@ function processCSV(d) {
     };
 }
 
+var colourFunc = d3.scaleOrdinal(d3.schemeCategory10);
+
 function createPieChart(dataset) {
-    var countries = [];
-    var refugees = [];
-
-    for (var i = 0; i < dataset.length; i++) {
-        countries.push(dataset[i].country);
-        refugees.push(dataset[i].refugees);
-    }
-
-    var outerRadius = w / 2;
+    var outerRadius = Math.min(w, h) / 2;
     var innerRadius = 0;
 
     var arc = d3.arc()
-        .outerRadius(outerRadius)
+        .outerRadius(outerRadius-padding)
         .innerRadius(innerRadius);
 
-    var pie = d3.pie();
+    var pie = d3.pie()
+        .value(function(d) { return d.refugees; });
 
     var svg = d3.select("#piechart")
         .append("svg")
         .attr("viewBox", `0 0 ${w} ${h}`);
 
     var arcs = svg.selectAll("g.arc")
-        .data(pie(refugees))
+        .data(pie(dataset))
         .enter()
         .append("g")
         .attr("class", "arc")
         .attr("transform", "translate(" + outerRadius + "," + outerRadius + ")");
 
-    var colour = d3.scaleOrdinal(d3.schemeCategory10);
-
     arcs.append("path")
         .attr("fill", function(d, i) {
-            return colour(i);
+            return colourFunc(i);
         })
         .attr("d", function(d, i) {
             return arc(d, i);
-        });
-
-    arcs.append("title") // TODO: make this more fancy
-        .text(function(d, i) {
-            return countries[i] + ": " + d.value.toLocaleString();
         })
+        .on("mouseover", moveToolTip)
+        .on("mousemove", moveToolTip)
+        .on("mouseleave", hideToolTip);
 }
 
 })();

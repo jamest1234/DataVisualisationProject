@@ -15,7 +15,6 @@ function parseDateString(dateString) {
 
 const tooltip = document.createElement("div");
 tooltip.classList.add("tooltip");
-tooltip.innerText = "Line 1\nLine 2";
 
 document.body.appendChild(tooltip);
 
@@ -24,7 +23,7 @@ function moveToolTip(e) {
     var bars = svg.selectAll("rect");
 
     var distanceComparator = function(d) {
-        return Math.abs(d3.select(d).attr("y") - e.clientY);
+        return Math.abs(d3.select(d).node().getBoundingClientRect().top - e.clientY);
     };
 
     var closestIndex = d3.scan(bars.nodes(), distanceComparator);
@@ -55,6 +54,8 @@ function processCSV(d, i) {
     }
 }
 
+var colourFunc;
+
 function createFunnelChart(dataset) {
     console.log(dataset);
 
@@ -83,7 +84,7 @@ function createFunnelChart(dataset) {
     svg.on("mouseleave", hideToolTip);
 
     
-    var colour = d3.scaleLinear()
+    colourFunc = d3.scaleLinear()
         .domain(d3.extent(dataset, function(d) { return d.refugees; }))
         .range(["#D4FC0A", "#FC870A"])
         .interpolate(d3.interpolateHcl);
@@ -92,7 +93,7 @@ function createFunnelChart(dataset) {
         .data(dataset)
         .enter()
         .append("rect")
-        .attr("x", function(d, i) {
+        .attr("x", function(d) {
             return (w-xScale(d.refugees))/2;
         })
         .attr("y", function(d, i) {
@@ -102,9 +103,22 @@ function createFunnelChart(dataset) {
             return xScale(d.refugees);
         })
         .attr("height", yScale.bandwidth()/2)
-        .attr("fill", function(d, i) {
-            return colour(d.refugees);
-        });
+        .attr("fill", function(d) {
+            return colourFunc(d.refugees);
+        })
+        .on("mouseover", barMouseOver)
+        .on("mousemove", barMouseOver)
+        .on("mouseleave", barMouseLeave);
+}
+
+function barMouseOver() {
+    d3.select(this).attr("fill", "black");
+}
+
+function barMouseLeave() {
+    d3.select(this).attr("fill", function(d) {
+        return colourFunc(d.refugees);
+    });
 }
 
 })();
