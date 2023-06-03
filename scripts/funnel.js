@@ -94,15 +94,15 @@ function createFunnelChart(dataset) {
         .enter()
         .append("rect")
         .attr("x", function(d) {
-            return (w-xScale(d.refugees))/2;
+            return Math.round((w-xScale(d.refugees))/2);
         })
         .attr("y", function(d, i) {
-            return yScale(i);
+            return Math.round(yScale(i));
         })
         .attr("width", function(d) {
-            return xScale(d.refugees);
+            return Math.round(xScale(d.refugees));
         })
-        .attr("height", yScale.bandwidth()/2)
+        .attr("height", Math.round(yScale.bandwidth()/1.7))
         .attr("fill", function(d) {
             return colourFunc(d.refugees);
         })
