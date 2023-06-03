@@ -4,11 +4,13 @@ const w = 900;
 const h = 600;
 const padding = 10;
 
+// create and append the tooltip element to the document
 const tooltip = document.createElement("div");
 tooltip.classList.add("tooltip");
 
 document.body.appendChild(tooltip);
 
+// move the tooltip to the mouse using a mouseover or mousemove event
 function moveToolTip(e) {
     var arc = d3.select(this);
 
@@ -19,16 +21,19 @@ function moveToolTip(e) {
 
     tooltip.innerHTML = "";
 
+    // create the tooltip text
     countryText = document.createElement("b");
     countryText.innerText = data.country + ": ";
     tooltip.appendChild(countryText);
     tooltip.appendChild(document.createTextNode(data.refugees.toLocaleString()));
 
+    // set the tooltip location to the mouse position
     tooltip.style.left = e.pageX+"px";
     tooltip.style.top = (e.pageY-tooltip.clientHeight)+"px";
     tooltip.style.display = "block";
 }
 
+// hide the tooltip when the mouse leaves the visualisation
 function hideToolTip() {
     var arc = d3.select(this);
 
@@ -38,6 +43,7 @@ function hideToolTip() {
     tooltip.style.display = "none";
 }
 
+// read in the csv data
 d3.csv("refugeecount.csv", processCSV)
     .then(createPieChart);
 
@@ -52,6 +58,7 @@ var colourFunc = d3.scaleOrdinal(d3.schemeCategory10);
 
 function createPieChart(dataset) {
 
+    // sort the data
     dataset.sort(function(a, b) {
         return b.refugees - a.refugees;
     });
@@ -59,17 +66,21 @@ function createPieChart(dataset) {
     var outerRadius = Math.min(w, h) / 2;
     var innerRadius = 0;
 
+    // create a D3 arc object
     var arc = d3.arc()
         .outerRadius(outerRadius-padding)
         .innerRadius(innerRadius);
 
+    // create the pie object
     var pie = d3.pie()
         .value(function(d) { return d.refugees; });
 
+    // create the svg element
     var svg = d3.select("#piechart")
         .append("svg")
         .attr("viewBox", `0 0 ${w} ${h}`);
 
+    // create the arcs of pie
     var arcs = svg.selectAll("g.arc")
         .data(pie(dataset))
         .enter()
@@ -78,37 +89,38 @@ function createPieChart(dataset) {
         .attr("transform", "translate(" + outerRadius + "," + outerRadius + ")");
 
     arcs.append("path")
-        .attr("fill", function(d, i) {
+        .attr("fill", function(d, i) { // use the colour scheme
             return colourFunc(i);
         })
-        .attr("d", function(d, i) {
+        .attr("d", function(d, i) { // set the shape of each arc
             return arc(d, i);
         })
         .on("mouseover", moveToolTip)
         .on("mousemove", moveToolTip)
         .on("mouseleave", hideToolTip);
 
-    svg.selectAll("rect")
+    // create circles for the legend
+    svg.selectAll("circle")
         .data(dataset)
         .enter()
-        .append("rect")
-        .attr("x", h + 40)
-        .attr("y", function(d, i) {
+        .append("circle")
+        .attr("cx", h + 40)
+        .attr("cy", function(d, i) {
             return (outerRadius/2) + i*40;
         })
-        .attr("width", 20)
-        .attr("height", 20)
+        .attr("r", 10)
         .attr("fill", function(d, i) {
             return colourFunc(i);
         });
 
+    // create legend text
     svg.selectAll("text")
         .data(dataset)
         .enter()
         .append("text")
-        .attr("x", h + 65)
+        .attr("x", h + 60)
         .attr("y", function(d, i) {
-            return (outerRadius/2) + i*40 + 18;
+            return (outerRadius/2) + i*40 + 6;
         })
         .attr("class", "pielegend")
         .text(function(d, i) {
