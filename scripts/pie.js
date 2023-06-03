@@ -51,6 +51,11 @@ function processCSV(d) {
 var colourFunc = d3.scaleOrdinal(d3.schemeCategory10);
 
 function createPieChart(dataset) {
+
+    dataset.sort(function(a, b) {
+        return b.refugees - a.refugees;
+    });
+
     var outerRadius = Math.min(w, h) / 2;
     var innerRadius = 0;
 
@@ -106,8 +111,8 @@ function createPieChart(dataset) {
             return (outerRadius/2) + i*40 + 18;
         })
         .attr("class", "pielegend")
-        .text(function(d) {
-            return d.country;
+        .text(function(d, i) {
+            return "#" + (i+1) + " - " + d.country;
         });
 }
 
