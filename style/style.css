@@ -8,6 +8,20 @@ body {
     fill: #505050;
 }
 
+.funneldate {
+    font-size: 12px;
+    fill: #505050;
+}
+
+.funnelmarkerlabel {
+    font-size: 16px;
+    fill: #505050;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
 .tooltip {
     pointer-events: none;
     position: absolute;

@@ -2,7 +2,7 @@
 
 const w = 600;
 const h = 500;
-const padding = 5;
+const padding = 130;
 
 function parseDateString(dateString) {
     var split = dateString.split("/");
@@ -109,6 +109,74 @@ function createFunnelChart(dataset) {
         .on("mouseover", barMouseOver)
         .on("mousemove", barMouseOver)
         .on("mouseleave", barMouseLeave);
+
+    svg.selectAll("text")
+        .data(dataset)
+        .enter()
+        .append("text")
+        .attr("x", 0)
+        .attr("y", function(d, i) {
+            return Math.round(yScale(i)+6);
+        })
+        .attr("class", "funneldate")
+        .text(function(d) {
+            return d.date.toLocaleDateString();
+        })
+        .filter(function(d, i) {
+            return i % 4 != 0;
+        })
+        .attr("class", "hidden");
+
+    const center = Math.round(w/2);
+    const pos3mil = Math.round((w+xScale(1e6*3))/2);
+    const neg3mil = Math.round((w-xScale(1e6*3))/2);
+
+    // markers
+    svg.append("line")
+        .attr("x1", center)
+        .attr("y1", 0)
+        .attr("x2", center)
+        .attr("y2", h)
+        .attr("stroke", "black")
+        .attr("stroke-dasharray", "5");
+    
+    svg.append("line")
+        .attr("x1", pos3mil)
+        .attr("y1", 0)
+        .attr("x2", pos3mil)
+        .attr("y2", h)
+        .attr("stroke", "black")
+        .attr("stroke-dasharray", "10");
+
+    svg.append("line")
+        .attr("x1", neg3mil)
+        .attr("y1", 0)
+        .attr("x2", neg3mil)
+        .attr("y2", h)
+        .attr("stroke", "black")
+        .attr("stroke-dasharray", "10");
+
+    const markerLabelY = Math.round(yScale(dataset.length-1)+20)
+
+    // marker labels
+    svg.append("text")
+        .attr("x", center+5)
+        .attr("y", markerLabelY)
+        .attr("class", "funnelmarkerlabel")
+        .text("0");
+    
+    svg.append("text")
+        .attr("x", pos3mil+5)
+        .attr("y", markerLabelY)
+        .attr("class", "funnelmarkerlabel")
+        .text("3 million");
+
+    svg.append("text")
+        .attr("x", neg3mil+5)
+        .attr("y", markerLabelY)
+        .attr("class", "funnelmarkerlabel")
+        .text("3 million");
+
 }
 
 function barMouseOver() {
