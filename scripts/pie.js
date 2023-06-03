@@ -1,6 +1,6 @@
 (function() {
 
-const w = 600;
+const w = 900;
 const h = 600;
 const padding = 10;
 
@@ -16,8 +16,13 @@ function moveToolTip(e) {
     arc.attr("stroke-width", 5);
 
     var data = arc.data()[0].data;
-    
-    tooltip.innerText = `${data.country}: ${data.refugees.toLocaleString()}`;
+
+    tooltip.innerHTML = "";
+
+    countryText = document.createElement("b");
+    countryText.innerText = data.country + ": ";
+    tooltip.appendChild(countryText);
+    tooltip.appendChild(document.createTextNode(data.refugees.toLocaleString()));
 
     tooltip.style.left = e.pageX+"px";
     tooltip.style.top = (e.pageY-tooltip.clientHeight)+"px";
@@ -77,6 +82,33 @@ function createPieChart(dataset) {
         .on("mouseover", moveToolTip)
         .on("mousemove", moveToolTip)
         .on("mouseleave", hideToolTip);
+
+    svg.selectAll("rect")
+        .data(dataset)
+        .enter()
+        .append("rect")
+        .attr("x", h + 40)
+        .attr("y", function(d, i) {
+            return (outerRadius/2) + i*40;
+        })
+        .attr("width", 20)
+        .attr("height", 20)
+        .attr("fill", function(d, i) {
+            return colourFunc(i);
+        });
+
+    svg.selectAll("text")
+        .data(dataset)
+        .enter()
+        .append("text")
+        .attr("x", h + 65)
+        .attr("y", function(d, i) {
+            return (outerRadius/2) + i*40 + 18;
+        })
+        .attr("class", "pielegend")
+        .text(function(d) {
+            return d.country;
+        });
 }
 
 })();

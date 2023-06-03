@@ -2,6 +2,12 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.pielegend {
+    font-size: 18px;
+    font-weight: bold;
+    fill: #505050;
+}
+
 .tooltip {
     pointer-events: none;
     position: absolute;
