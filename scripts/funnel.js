@@ -107,7 +107,7 @@ function createFunnelChart(dataset) {
 
     // scale the data's colour from green to orange linearly
     colourFunc = d3.scaleLinear()
-        .domain(d3.extent(dataset, function(d, i) { return i; }))
+        .domain(d3.extent(dataset, function(d) { return d.date; }))
         .range(["#EDE81A", "#FC870A"])
         .interpolate(d3.interpolateHcl);
 
@@ -127,8 +127,8 @@ function createFunnelChart(dataset) {
             return Math.round(xScale(d.refugees));
         })
         .attr("height", Math.round(yScale.bandwidth()/1.7))
-        .attr("fill", function(d, i) {
-            return colourFunc(i);
+        .attr("fill", function(d) {
+            return colourFunc(d.date);
         })
         .on("mouseover", barMouseOver)
         .on("mousemove", barMouseOver)
@@ -203,14 +203,21 @@ function createFunnelChart(dataset) {
 
 // fill the bar black when hovered over
 function barMouseOver() {
-    d3.select(this).attr("fill", "black");
+    d3.select(this)
+        .transition()
+        .duration(100)
+        .ease(d3.easeElasticOut)
+        .attr("fill", "black");
 }
 
 // reset the bar colour when the mouse leaves
 function barMouseLeave() {
-    d3.select(this).attr("fill", function(d, i) {
-        return colourFunc(i);
-    });
+    d3.select(this)
+        .transition()
+        .duration(500)
+        .ease(d3.easeElasticOut).attr("fill", function(d) {
+            return colourFunc(d.date);
+        });
 }
 
 })();

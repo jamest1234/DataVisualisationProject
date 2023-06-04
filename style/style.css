@@ -3,6 +3,56 @@ body {
     margin: 0;
 }
 
+.header {
+    background-color: grey;
+    color: white;
+    text-align: center;
+    height: 30vh;
+    padding: 20px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    position: relative;
+
+    background-color: rgba(0, 0, 0, .5);
+    background-image: url('../img/Anti-terrorist_operation_in_eastern_Ukraine_(War_Ukraine)_(26832553930).jpg');
+    background-blend-mode: darken;
+    background-position: center;
+    background-size: cover;
+}
+
+.imgattr {
+    position: absolute;
+    left: 5px;
+    bottom: 5px;
+    font-size: 12px;
+}
+
+.imgattr > a {
+    color: white;
+}
+
+h1 {
+    margin: 0;
+}
+
+.contentcontainer {
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.content {
+    max-width: 100%;
+    width: 700px;
+    margin: 10px;
+    padding: 10px;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+}
+
 .pielegend {
     font-size: 18px;
     font-weight: bold;
