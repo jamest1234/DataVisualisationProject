@@ -107,8 +107,8 @@ function createFunnelChart(dataset) {
 
     // scale the data's colour from green to orange linearly
     colourFunc = d3.scaleLinear()
-        .domain(d3.extent(dataset, function(d) { return d.refugees; }))
-        .range(["#D4FC0A", "#FC870A"])
+        .domain(d3.extent(dataset, function(d, i) { return i; }))
+        .range(["#EDE81A", "#FC870A"])
         .interpolate(d3.interpolateHcl);
 
     
@@ -127,8 +127,8 @@ function createFunnelChart(dataset) {
             return Math.round(xScale(d.refugees));
         })
         .attr("height", Math.round(yScale.bandwidth()/1.7))
-        .attr("fill", function(d) {
-            return colourFunc(d.refugees);
+        .attr("fill", function(d, i) {
+            return colourFunc(i);
         })
         .on("mouseover", barMouseOver)
         .on("mousemove", barMouseOver)
@@ -208,8 +208,8 @@ function barMouseOver() {
 
 // reset the bar colour when the mouse leaves
 function barMouseLeave() {
-    d3.select(this).attr("fill", function(d) {
-        return colourFunc(d.refugees);
+    d3.select(this).attr("fill", function(d, i) {
+        return colourFunc(i);
     });
 }
 
