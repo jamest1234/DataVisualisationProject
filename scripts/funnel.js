@@ -152,9 +152,31 @@ function createFunnelChart(dataset) {
         })
         .attr("class", "hidden");
 
+    const markerLabelY = Math.round(yScale(dataset.length-1)+20);
+
+    function createMarker(position, text) {
+        svg.append("line")
+            .attr("x1", position)
+            .attr("y1", 0)
+            .attr("x2", position)
+            .attr("y2", h)
+            .attr("stroke", "black")
+            .attr("stroke-dasharray", "10");
+
+        svg.append("text")
+            .attr("x", position+5)
+            .attr("y", markerLabelY)
+            .attr("class", "funnelmarkerlabel")
+            .text(text);
+    }
+
     const center = Math.round(w/2);
+    const pos100k = Math.round((w+xScale(1e5))/2);
+    const neg100k = Math.round((w-xScale(1e5))/2);
     const pos3mil = Math.round((w+xScale(1e6*3))/2);
     const neg3mil = Math.round((w-xScale(1e6*3))/2);
+    const pos7mil = Math.round((w+xScale(1e6*7))/2);
+    const neg7mil = Math.round((w-xScale(1e6*7))/2);
 
     // markers
     svg.append("line")
@@ -164,44 +186,19 @@ function createFunnelChart(dataset) {
         .attr("y2", h)
         .attr("stroke", "black")
         .attr("stroke-dasharray", "5");
-    
-    svg.append("line")
-        .attr("x1", pos3mil)
-        .attr("y1", 0)
-        .attr("x2", pos3mil)
-        .attr("y2", h)
-        .attr("stroke", "black")
-        .attr("stroke-dasharray", "10");
 
-    svg.append("line")
-        .attr("x1", neg3mil)
-        .attr("y1", 0)
-        .attr("x2", neg3mil)
-        .attr("y2", h)
-        .attr("stroke", "black")
-        .attr("stroke-dasharray", "10");
-
-    const markerLabelY = Math.round(yScale(dataset.length-1)+20)
-
-    // marker labels
     svg.append("text")
         .attr("x", center+5)
         .attr("y", markerLabelY)
         .attr("class", "funnelmarkerlabel")
         .text("0");
     
-    svg.append("text")
-        .attr("x", pos3mil+5)
-        .attr("y", markerLabelY)
-        .attr("class", "funnelmarkerlabel")
-        .text("3 million");
-
-    svg.append("text")
-        .attr("x", neg3mil+5)
-        .attr("y", markerLabelY)
-        .attr("class", "funnelmarkerlabel")
-        .text("3 million");
-
+    createMarker(pos100k, "100k");
+    createMarker(neg100k, "100k");
+    createMarker(pos3mil, "3m");
+    createMarker(neg3mil, "3m");
+    createMarker(pos7mil, "7m");
+    createMarker(neg7mil, "7m");
 }
 
 // fill the bar black when hovered over
